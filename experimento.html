@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Monos — Resultados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mint: #A8E6CF;
+  --mint-light: #D4F5E6;
+  --lilac: #C3B1E1;
+  --lilac-light: #E8DEFF;
+  --yellow: #FFEAA7;
+  --yellow-light: #FFF8DC;
+  --pink: #FFB7C5;
+  --pink-light: #FFE0E8;
+  --orange: #FFD4A8;
+  --bg: #FAFBFC;
+  --card: #FFFFFF;
+  --text: #1A1A2E;
+  --text-secondary: #6B7280;
+  --border: #F0F0F5;
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --tab-height: 72px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  width: 100vw;
+  max-width: 430px;
+  margin: 0 auto;
+  padding-bottom: var(--tab-height);
+  overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+.page-header {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.back-btn {
+  font-size: 15px; font-weight: 700; color: #764ba2;
+  text-decoration: none; display: flex; align-items: center; gap: 4px;
+  z-index: 1;
+}
+.page-title {
+  position: absolute; left: 0; right: 0;
+  text-align: center; font-size: 17px; font-weight: 800;
+}
+
+/* ===== CONTENT ===== */
+.content { padding: 8px 24px 24px; }
+
+/* ===== HERO ===== */
+.hero {
+  text-align: center; margin-bottom: 24px;
+}
+.hero-emoji { font-size: 56px; margin-bottom: 8px; }
+.hero-title { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+.hero-sub { font-size: 14px; color: var(--text-secondary); font-weight: 500; margin-top: 4px; }
+
+/* ===== CARDS ===== */
+.card {
+  background: #fff; border-radius: var(--radius); padding: 24px;
+  box-shadow: var(--shadow); margin-bottom: 20px;
+}
+.card-label {
+  font-size: 12px; font-weight: 700; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 18px;
+}
+
+/* ===== DISTRIBUTION BARS ===== */
+.dist-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px; position: relative;
+}
+.dist-row:last-child { margin-bottom: 0; }
+.dist-row.user-pick {
+  background: var(--lilac-light); border: 2px solid var(--lilac);
+  border-radius: 14px; padding: 10px 12px; margin-left: -12px; margin-right: -12px;
+}
+.dist-emoji {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.dist-row:nth-child(1) .dist-emoji { background: var(--mint-light); }
+.dist-row:nth-child(2) .dist-emoji { background: var(--lilac-light); }
+.dist-row:nth-child(3) .dist-emoji { background: var(--yellow-light); }
+.dist-row:nth-child(4) .dist-emoji { background: var(--pink-light); }
+.dist-info { flex: 1; min-width: 0; }
+.dist-label-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.dist-name { font-size: 14px; font-weight: 600; }
+.dist-pct { font-size: 14px; font-weight: 800; }
+.dist-bar-bg {
+  height: 10px; border-radius: 5px; background: var(--border); overflow: hidden;
+}
+.dist-bar-fill {
+  height: 100%; border-radius: 5px; width: 0;
+  transition: width 1s cubic-bezier(.22,1,.36,1);
+}
+.dist-row:nth-child(1) .dist-bar-fill { background: var(--mint); }
+.dist-row:nth-child(2) .dist-bar-fill { background: var(--lilac); }
+.dist-row:nth-child(3) .dist-bar-fill { background: var(--yellow); }
+.dist-row:nth-child(4) .dist-bar-fill { background: var(--pink); }
+.user-badge {
+  font-size: 11px; font-weight: 700; color: #764ba2;
+  margin-top: 6px; display: flex; align-items: center; gap: 4px;
+}
+
+/* ===== RARITY CARD ===== */
+.rarity-card {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: var(--radius); padding: 28px 24px;
+  box-shadow: var(--shadow-lg); margin-bottom: 20px;
+  color: #fff; text-align: center;
+}
+.rarity-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; opacity: .85; margin-bottom: 12px; }
+.rarity-number { font-size: 64px; font-weight: 800; line-height: 1; letter-spacing: -2px; }
+.rarity-of { font-size: 18px; font-weight: 600; opacity: .7; margin-bottom: 16px; }
+.rarity-meter-bg {
+  height: 10px; border-radius: 5px; background: rgba(255,255,255,.25); overflow: hidden; margin-bottom: 20px;
+}
+.rarity-meter-fill {
+  height: 100%; border-radius: 5px; background: #fff; width: 0;
+  transition: width 1.2s cubic-bezier(.22,1,.36,1);
+}
+.rarity-quote {
+  font-size: 14px; line-height: 1.5; opacity: .9; font-weight: 500;
+  font-style: italic;
+}
+
+/* ===== SEGMENT CARD ===== */
+.seg-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.seg-row:last-child { border-bottom: none; }
+.seg-label { font-size: 14px; font-weight: 600; }
+.seg-value { font-size: 14px; font-weight: 800; }
+.seg-value.green { color: #00b894; }
+.seg-value.red { color: #e17055; }
+
+/* ===== SHARE BTN ===== */
+.share-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 18px; border: none; border-radius: 16px;
+  font-size: 17px; font-weight: 700;
+  background: var(--text); color: #fff;
+  cursor: pointer; font-family: inherit;
+  box-shadow: var(--shadow-lg);
+  transition: transform .15s;
+  margin-bottom: 20px;
+}
+.share-btn:active { transform: scale(0.97); }
+.share-btn svg { width: 20px; height: 20px; }
+
+/* ===== TAB BAR ===== */
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: var(--tab-height);
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; z-index: 80;
+  padding-bottom: env(safe-area-inset-bottom);
+  max-width: 430px; margin: 0 auto;
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; text-decoration: none;
+  color: var(--text-secondary); transition: color .2s;
+}
+.tab-item.active { color: #764ba2; }
+.tab-item svg { width: 24px; height: 24px; }
+.tab-label { font-size: 11px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <a href="index.html" class="back-btn">← Volver</a>
+  <div class="page-title">Resultados</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-emoji">🐒</div>
+    <div class="hero-title">Resultados del laboratorio</div>
+    <div class="hero-sub">Análisis completado por nuestros monos</div>
+  </div>
+
+  <!-- DISTRIBUCIÓN GLOBAL -->
+  <div class="card">
+    <div class="card-label">Distribución global</div>
+    <div class="dist-row user-pick">
+      <div class="dist-emoji">🌅</div>
+      <div class="dist-info">
+        <div class="dist-label-row"><span class="dist-name">Por la mañana</span><span class="dist-pct">63%</span></div>
+        <div class="dist-bar-bg"><div class="dist-bar-fill" data-w="63"></div></div>
+        <div class="user-badge">✓ Tu respuesta</div>
+      </div>
+    </div>
+    <div class="dist-row">
+      <div class="dist-emoji">🌙</div>
+      <div class="dist-info">
+        <div class="dist-label-row"><span class="dist-name">Por la noche</span><span class="dist-pct">29%</span></div>
+        <div class="dist-bar-bg"><div class="dist-bar-fill" data-w="29"></div></div>
+      </div>
+    </div>
+    <div class="dist-row">
+      <div class="dist-emoji">🔄</div>
+      <div class="dist-info">
+        <div class="dist-label-row"><span class="dist-name">Ambas</span><span class="dist-pct">6%</span></div>
+        <div class="dist-bar-bg"><div class="dist-bar-fill" data-w="6"></div></div>
+      </div>
+    </div>
+    <div class="dist-row">
+      <div class="dist-emoji">🤷</div>
+      <div class="dist-info">
+        <div class="dist-label-row"><span class="dist-name">Depende del día</span><span class="dist-pct">2%</span></div>
+        <div class="dist-bar-bg"><div class="dist-bar-fill" data-w="2"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÍNDICE DE RAREZA -->
+  <div class="rarity-card">
+    <div class="rarity-title">Tu índice de rareza</div>
+    <div class="rarity-number" id="rarityNum">0</div>
+    <div class="rarity-of">de 100</div>
+    <div class="rarity-meter-bg"><div class="rarity-meter-fill" id="rarityMeter"></div></div>
+    <div class="rarity-quote">"Dato: El 63% de los sujetos coincide contigo. Eres predeciblemente humano." — Dr. Banana 🐒</div>
+  </div>
+
+  <!-- COMPARATIVA POR SEGMENTO -->
+  <div class="card">
+    <div class="card-label">Comparativa por segmento</div>
+    <div class="seg-row">
+      <span class="seg-label">Tu rango de edad (25-34)</span>
+      <span class="seg-value green">68% igual que tú</span>
+    </div>
+    <div class="seg-row">
+      <span class="seg-label">Tu género (Hombre)</span>
+      <span class="seg-value red">Solo 52% igual</span>
+    </div>
+    <div class="seg-row">
+      <span class="seg-label">Tu país (España)</span>
+      <span class="seg-value green">71% coincide</span>
+    </div>
+  </div>
+
+  <!-- COMPARTIR -->
+  <button class="share-btn" onclick="alert('Compartir')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    Compartir resultado
+  </button>
+
+</div>
+
+<!-- TAB BAR -->
+<nav class="tab-bar">
+  <a href="index.html" class="tab-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+    <span class="tab-label">Inicio</span>
+  </a>
+  <a href="amigos.html" class="tab-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    <span class="tab-label">Amigos</span>
+  </a>
+  <a href="perfil.html" class="tab-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span class="tab-label">Perfil</span>
+  </a>
+  <a href="logros.html" class="tab-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+    <span class="tab-label">Logros</span>
+  </a>
+</nav>
+
+<script>
+// Animate after 200ms
+setTimeout(() => {
+  // Bars
+  document.querySelectorAll('.dist-bar-fill').forEach(bar => {
+    bar.style.width = bar.dataset.w + '%';
+  });
+
+  // Rarity meter
+  document.getElementById('rarityMeter').style.width = '27%';
+
+  // Count up
+  const el = document.getElementById('rarityNum');
+  const target = 27;
+  const duration = 1200;
+  const start = performance.now();
+  function tick(now) {
+    const t = Math.min((now - start) / duration, 1);
+    el.textContent = Math.round(t * target);
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}, 200);
+</script>
+</body>
+</html>
