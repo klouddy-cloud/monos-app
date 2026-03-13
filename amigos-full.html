@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Monos — Tu manada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mint: #A8E6CF;
+  --mint-light: #D4F5E6;
+  --lilac: #C3B1E1;
+  --lilac-light: #E8DEFF;
+  --yellow: #FFEAA7;
+  --yellow-light: #FFF8DC;
+  --pink: #FFB7C5;
+  --pink-light: #FFE0E8;
+  --orange: #FFD4A8;
+  --bg: #FAFBFC;
+  --card: #FFFFFF;
+  --text: #1A1A2E;
+  --text-secondary: #6B7280;
+  --border: #F0F0F5;
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --tab-height: 72px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  width: 100vw;
+  max-width: 430px;
+  margin: 0 auto;
+  padding-bottom: var(--tab-height);
+  overflow-x: hidden;
+}
+
+/* HEADER */
+.page-header { padding: 24px 24px 0; }
+.page-title { font-size: 24px; font-weight: 800; letter-spacing: -0.3px; }
+.page-subtitle { font-size: 14px; color: var(--text-secondary); font-weight: 500; margin-top: 4px; }
+
+/* TABS */
+.sort-tabs {
+  display: flex; gap: 10px; padding: 20px 24px 8px;
+}
+.sort-tab {
+  padding: 10px 20px; border-radius: 24px; border: none;
+  font-family: inherit; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all .3s ease;
+  background: var(--border); color: var(--text-secondary);
+}
+.sort-tab.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff; box-shadow: 0 4px 16px rgba(102,126,234,0.35);
+}
+
+/* CONTENT */
+.friends-content { padding: 16px 24px; }
+
+/* FRIEND CARD */
+.friend-card {
+  background: #fff; border-radius: var(--radius); padding: 16px;
+  box-shadow: var(--shadow); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; transition: transform .15s, box-shadow .15s, order .4s;
+  position: relative;
+}
+.friend-card:active { transform: scale(0.98); }
+.friend-card:hover { box-shadow: var(--shadow-lg); }
+
+.friend-card.me {
+  background: var(--lilac-light);
+  border: 2px solid var(--lilac);
+}
+
+.friend-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 800; color: #fff; flex-shrink: 0;
+}
+
+.friend-info { flex: 1; min-width: 0; }
+.friend-name { font-size: 16px; font-weight: 700; }
+.friend-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+.friend-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+
+.rarity-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 4px 10px; border-radius: 16px;
+  font-size: 12px; font-weight: 700;
+}
+.rarity-high { background: var(--lilac-light); color: #764ba2; }
+.rarity-mid { background: var(--yellow-light); color: #B8860B; }
+.rarity-low { background: var(--mint-light); color: #059669; }
+
+.sim-bar-wrap {
+  display: flex; align-items: center; gap: 6px; width: 110px;
+}
+.sim-bar {
+  flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+}
+.sim-bar-fill {
+  height: 100%; border-radius: 3px; width: 0; transition: width .8s ease .3s;
+}
+.sim-bar-fill.green { background: linear-gradient(90deg, #00b894, #55efc4); }
+.sim-bar-fill.yellow { background: linear-gradient(90deg, #fdcb6e, #ffeaa7); }
+.sim-bar-fill.red { background: linear-gradient(90deg, #d63031, #ff7675); }
+.sim-pct { font-size: 11px; font-weight: 700; color: var(--text-secondary); white-space: nowrap; }
+
+/* FRIENDS LIST with animation */
+.friends-list {
+  display: flex; flex-direction: column;
+}
+.friend-card-wrap {
+  transition: transform .4s ease, opacity .3s ease;
+}
+
+/* INVITE BTN */
+.btn-primary {
+  display: block; width: 100%; padding: 18px; border: none; border-radius: 16px;
+  font-size: 17px; font-weight: 700;
+  background: linear-gradient(135deg, #667eea, #764ba2); color: #fff;
+  cursor: pointer; font-family: inherit;
+  box-shadow: 0 4px 20px rgba(102,126,234,0.4);
+  transition: transform .15s;
+  margin: 8px 0 16px; text-align: center;
+}
+.btn-primary:active { transform: scale(0.97); }
+
+/* FUN FACT */
+.fun-fact {
+  background: linear-gradient(135deg, var(--mint-light), var(--lilac-light));
+  border-radius: var(--radius); padding: 20px;
+  font-size: 15px; font-weight: 600; line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* TAB BAR */
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: var(--tab-height);
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; z-index: 80;
+  padding-bottom: env(safe-area-inset-bottom);
+  max-width: 430px; margin: 0 auto;
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; text-decoration: none;
+  color: var(--text-secondary); transition: color .2s;
+}
+.tab-item.active { color: #764ba2; }
+.tab-item svg { width: 24px; height: 24px; }
+.tab-label { font-size: 11px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-title">Tu manada 🐒</div>
+  <div class="page-subtitle">7 monos en tu grupo</div>
+</div>
+
+<div class="sort-tabs">
+  <button class="sort-tab active" onclick="sortBy('rarity')">🦄 Más raros</button>
+  <button class="sort-tab" onclick="sortBy('similarity')">🪞 Parecidos a ti</button>
+</div>
+
+<div class="friends-content">
+  <div class="friends-list" id="friendsList"></div>
+
+  <button class="btn-primary" onclick="void(0)">＋ Invitar más monos</button>
+
+  <div class="fun-fact">
+    🐒 Fun fact: Tu grupo es un 23% más raro que la media. Los monos están impresionados.
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<nav class="tab-bar">
+  <a href="index.html" class="tab-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+    <span class="tab-label">Inicio</span>
+  </a>
+  <a href="amigos-full.html" class="tab-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    <span class="tab-label">Amigos</span>
+  </a>
+  <a href="perfil.html" class="tab-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span class="tab-label">Perfil</span>
+  </a>
+  <a href="logros.html" class="tab-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+    <span class="tab-label">Logros</span>
+  </a>
+</nav>
+
+<script>
+const friends = [
+  { name:'Laura', initial:'L', rarity:61, similarity:82, color:'#667eea', sub:'Respondió igual en 12 de 15 preguntas' },
+  { name:'Miguel', initial:'M', rarity:78, similarity:34, color:'#764ba2', sub:'Solo coincidís en 5 de 15' },
+  { name:'Ana', initial:'A', rarity:55, similarity:71, color:'#e84393', sub:'Respondió igual en 11 de 15 preguntas' },
+  { name:'Carlos', initial:'C', rarity:42, similarity:88, color:'#00b894', sub:'Respondió igual en 13 de 15 preguntas' },
+  { name:'María', initial:'M', rarity:33, similarity:76, color:'#fdcb6e', sub:'Respondió igual en 11 de 15 preguntas', dark:true },
+  { name:'Pablo', initial:'P', rarity:91, similarity:22, color:'#d63031', sub:'Solo coincidís en 3 de 15' },
+  { name:'Sofía', initial:'S', rarity:47, similarity:65, color:'#6c5ce7', sub:'Respondió igual en 10 de 15 preguntas' },
+];
+
+let currentSort = 'rarity';
+
+function rarityClass(r) { return r > 60 ? 'rarity-high' : r < 40 ? 'rarity-low' : 'rarity-mid'; }
+function simColor(s) { return s > 70 ? 'green' : s >= 40 ? 'yellow' : 'red'; }
+
+function renderMe() {
+  return `<div class="friend-card me">
+    <div class="friend-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)">E</div>
+    <div class="friend-info">
+      <div class="friend-name">Eric (tú)</div>
+      <div class="friend-sub">Tú eres el mono original 🐵</div>
+    </div>
+    <div class="friend-meta">
+      <span class="rarity-badge ${rarityClass(42)}">🦄 42</span>
+    </div>
+  </div>`;
+}
+
+function renderFriend(f) {
+  const txtColor = f.dark ? 'color:#333;' : '';
+  return `<div class="friend-card" data-rarity="${f.rarity}" data-sim="${f.similarity}">
+    <div class="friend-avatar" style="background:${f.color};${txtColor}">${f.initial}</div>
+    <div class="friend-info">
+      <div class="friend-name">${f.name}</div>
+      <div class="friend-sub">${f.sub}</div>
+    </div>
+    <div class="friend-meta">
+      <span class="rarity-badge ${rarityClass(f.rarity)}">🦄 ${f.rarity}</span>
+      <div class="sim-bar-wrap">
+        <div class="sim-bar"><div class="sim-bar-fill ${simColor(f.similarity)}" data-width="${f.similarity}"></div></div>
+        <span class="sim-pct">${f.similarity}%</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function render() {
+  const sorted = [...friends].sort((a, b) =>
+    currentSort === 'rarity' ? b.rarity - a.rarity : b.similarity - a.similarity
+  );
+  const list = document.getElementById('friendsList');
+  list.innerHTML = renderMe() + sorted.map(renderFriend).join('');
+  // Animate bars
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.sim-bar-fill').forEach(el => {
+      el.style.width = el.dataset.width + '%';
+    });
+  });
+}
+
+function sortBy(mode) {
+  currentSort = mode;
+  document.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
