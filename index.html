@@ -879,9 +879,9 @@ document.querySelectorAll('#registration .reg-option').forEach(opt => {
     step.querySelectorAll('.reg-option').forEach(o => o.classList.remove('selected'));
     opt.classList.add('selected');
     const val = opt.dataset.val;
-    if(regStep===1) state.user.age = val;
-    if(regStep===2) state.user.sex = val;
-    if(regStep===3) { state.user.country = val; setTimeout(finishReg, 300); }
+    if(regStep===1) { state.user.age = val; setTimeout(()=>{ regStep++; updateReg(); }, 300); }
+    else if(regStep===2) { state.user.sex = val; setTimeout(()=>{ regStep++; updateReg(); }, 300); }
+    else if(regStep===3) { state.user.country = val; setTimeout(finishReg, 300); }
   };
 });
 function updateReg() {
