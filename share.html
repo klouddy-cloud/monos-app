@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Monos — Compartir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mint: #A8E6CF; --mint-light: #D4F5E6;
+  --lilac: #C3B1E1; --lilac-light: #E8DEFF;
+  --yellow: #FFEAA7; --yellow-light: #FFF8DC;
+  --pink: #FFB7C5; --pink-light: #FFE0E8;
+  --text: #1A1A2E; --text-secondary: #6B7280;
+  --border: #F0F0F5;
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+  --radius: 20px; --radius-sm: 14px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  background: #0a0a0a;
+  color: #fff;
+  min-height: 100dvh;
+  width: 100vw;
+  max-width: 430px;
+  margin: 0 auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+.share-header {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.close-btn {
+  font-size: 15px; font-weight: 700; color: rgba(255,255,255,.7);
+  text-decoration: none; display: flex; align-items: center; gap: 4px;
+  z-index: 1; position: absolute; right: 24px;
+}
+.share-title {
+  width: 100%;
+  text-align: center; font-size: 17px; font-weight: 800; color: #fff;
+}
+
+/* ===== SLIDER ===== */
+.slider-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 24px;
+  position: relative;
+}
+.slider-track {
+  display: flex;
+  transition: transform .35s cubic-bezier(.22,1,.36,1);
+  will-change: transform;
+}
+.slide {
+  flex-shrink: 0;
+  width: calc(100vw - 48px);
+  max-width: 382px;
+  aspect-ratio: 9/16;
+  max-height: calc(100dvh - 220px);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px 24px;
+  color: #fff;
+  position: relative;
+}
+
+/* Slide 1 */
+.slide-1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+/* Slide 2 */
+.slide-2 { background: linear-gradient(135deg, #4c1d95, #7c3aed); }
+/* Slide 3 */
+.slide-3 { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+
+.badge {
+  background: rgba(255,255,255,.15);
+  backdrop-filter: blur(8px);
+  padding: 8px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+  text-transform: uppercase;
+}
+
+.slide-question {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+  text-align: center;
+  margin: 16px 0;
+}
+
+/* Options list */
+.share-options {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.share-opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,.12);
+  border-radius: 14px;
+  font-size: 16px; font-weight: 600;
+}
+.share-opt-emoji { font-size: 20px; flex-shrink: 0; }
+
+/* Slide 2 selected */
+.share-opt.selected {
+  background: rgba(255,255,255,.3);
+  border: 2px solid rgba(255,255,255,.5);
+}
+.share-opt.selected .opt-check {
+  margin-left: auto;
+  font-size: 18px;
+}
+.share-opt.dimmed {
+  opacity: .35;
+}
+
+/* Slide 3 rarity */
+.rarity-big {
+  font-size: 96px;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  letter-spacing: -4px;
+}
+.rarity-sub {
+  font-size: 20px;
+  font-weight: 600;
+  opacity: .6;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.rarity-bar-bg {
+  height: 10px; border-radius: 5px;
+  background: rgba(255,255,255,.2);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.rarity-bar-fill {
+  height: 100%; border-radius: 5px;
+  background: linear-gradient(90deg, #667eea, #a855f7);
+  width: 27%;
+}
+.rarity-answer {
+  text-align: center;
+  font-size: 16px; font-weight: 600;
+  margin-bottom: 12px;
+  opacity: .85;
+}
+.rarity-quote {
+  text-align: center;
+  font-size: 14px;
+  font-style: italic;
+  opacity: .75;
+  line-height: 1.5;
+}
+
+/* Footer text in cards */
+.slide-footer {
+  text-align: center;
+  margin-top: auto;
+  padding-top: 16px;
+}
+.slide-cta {
+  font-size: 18px; font-weight: 700;
+  margin-bottom: 6px;
+}
+.slide-brand {
+  font-size: 13px; font-weight: 600;
+  opacity: .5;
+}
+
+/* ===== DOTS ===== */
+.dots {
+  display: flex; justify-content: center; gap: 8px;
+  padding: 16px 0 12px;
+}
+.dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,.3);
+  transition: all .3s;
+  cursor: pointer;
+}
+.dot.active {
+  width: 24px; border-radius: 4px;
+  background: #fff;
+}
+
+/* ===== BUTTONS ===== */
+.actions {
+  padding: 0 24px 32px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.btn-share {
+  width: 100%; padding: 18px; border: none; border-radius: 16px;
+  font-size: 17px; font-weight: 700;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff; cursor: pointer; font-family: inherit;
+  box-shadow: 0 4px 20px rgba(102,126,234,0.4);
+  transition: transform .15s;
+}
+.btn-share:active { transform: scale(0.97); }
+.btn-download {
+  width: 100%; padding: 16px; border: 2px solid rgba(255,255,255,.2); border-radius: 16px;
+  font-size: 15px; font-weight: 700;
+  background: transparent;
+  color: rgba(255,255,255,.7); cursor: pointer; font-family: inherit;
+  transition: transform .15s;
+}
+.btn-download:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="share-header">
+  <div class="share-title">Compartir</div>
+  <a href="experimento.html" class="close-btn">✕ Cerrar</a>
+</div>
+
+<!-- SLIDER -->
+<div class="slider-wrap" id="sliderWrap">
+  <div class="slider-track" id="sliderTrack">
+
+    <!-- SLIDE 1: Genera debate -->
+    <div class="slide slide-1">
+      <div class="badge">🐒 MONOS — Experimento Social</div>
+      <div>
+        <div class="slide-question">¿Te duchas por la mañana o por la noche?</div>
+        <div class="share-options">
+          <div class="share-opt"><span class="share-opt-emoji">🌅</span> Por la mañana</div>
+          <div class="share-opt"><span class="share-opt-emoji">🌙</span> Por la noche</div>
+          <div class="share-opt"><span class="share-opt-emoji">🔄</span> Ambas</div>
+          <div class="share-opt"><span class="share-opt-emoji">🤷</span> Depende del día</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="slide-cta">¿Y tú qué opinas? 👀</div>
+        <div class="slide-brand">monos.app</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Posiciónate -->
+    <div class="slide slide-2">
+      <div class="badge">🐒 MONOS — Experimento Social</div>
+      <div>
+        <div class="slide-question">¿Te duchas por la mañana o por la noche?</div>
+        <div class="share-options">
+          <div class="share-opt selected"><span class="share-opt-emoji">🌅</span> Por la mañana <span class="opt-check">✓</span></div>
+          <div class="share-opt dimmed"><span class="share-opt-emoji">🌙</span> Por la noche</div>
+          <div class="share-opt dimmed"><span class="share-opt-emoji">🔄</span> Ambas</div>
+          <div class="share-opt dimmed"><span class="share-opt-emoji">🤷</span> Depende del día</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div class="slide-cta">Yo lo tengo claro. ¿Y tú?</div>
+        <div class="slide-brand">monos.app</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Saca pecho -->
+    <div class="slide slide-3">
+      <div class="badge">🐒 MONOS — Mi índice de rareza</div>
+      <div style="text-align:center;">
+        <div class="rarity-big">27</div>
+        <div class="rarity-sub">de 100</div>
+        <div class="rarity-bar-bg"><div class="rarity-bar-fill"></div></div>
+        <div class="rarity-answer">🌅 Por la mañana</div>
+        <div class="rarity-quote">"Eres predeciblemente humano" — Dr. Banana 🐒</div>
+      </div>
+      <div class="slide-footer">
+        <div class="slide-cta">¿Tú qué tan raro eres?</div>
+        <div class="slide-brand">monos.app</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DOTS -->
+<div class="dots" id="dots">
+  <div class="dot active" data-i="0"></div>
+  <div class="dot" data-i="1"></div>
+  <div class="dot" data-i="2"></div>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions">
+  <button class="btn-share" onclick="shareStory()">📲 Compartir en stories</button>
+  <button class="btn-download" onclick="alert('Descargando...')">⬇ Descargar imagen</button>
+</div>
+
+<script>
+const track = document.getElementById('sliderTrack');
+const wrap = document.getElementById('sliderWrap');
+const dots = document.querySelectorAll('.dot');
+let current = 0;
+const total = 3;
+
+function getSlideWidth() {
+  return track.children[0].offsetWidth;
+}
+
+function goTo(i) {
+  current = Math.max(0, Math.min(i, total - 1));
+  track.style.transform = `translateX(${-current * getSlideWidth()}px)`;
+  dots.forEach((d, idx) => d.classList.toggle('active', idx === current));
+}
+
+// Dot clicks
+dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.i)));
+
+// Touch swipe
+let startX = 0, startY = 0, dx = 0, swiping = false;
+wrap.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+  dx = 0; swiping = true;
+  track.style.transition = 'none';
+}, { passive: true });
+
+wrap.addEventListener('touchmove', e => {
+  if (!swiping) return;
+  dx = e.touches[0].clientX - startX;
+  const dy = e.touches[0].clientY - startY;
+  if (Math.abs(dy) > Math.abs(dx)) { swiping = false; return; }
+  track.style.transform = `translateX(${-current * getSlideWidth() + dx}px)`;
+}, { passive: true });
+
+wrap.addEventListener('touchend', () => {
+  if (!swiping) { track.style.transition = ''; goTo(current); return; }
+  track.style.transition = '';
+  if (dx < -50) goTo(current + 1);
+  else if (dx > 50) goTo(current - 1);
+  else goTo(current);
+  swiping = false;
+});
+
+// Share
+function shareStory() {
+  if (navigator.share) {
+    navigator.share({ title: 'Monos — Experimento Social', text: '¿Te duchas por la mañana o por la noche? Descúbrelo en Monos', url: 'https://monos.app' }).catch(() => {});
+  } else {
+    alert('Compartir imagen');
+  }
+}
+
+// Resize fix
+window.addEventListener('resize', () => goTo(current));
+</script>
+</body>
+</html>
