@@ -70,6 +70,14 @@ body {
   text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 16px;
 }
 .daily-label svg { width: 16px; height: 16px; }
+.pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+}
+.pill-active { background: #DEF7EC; color: #059669; }
+.pill-timer { background: var(--border); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.pill-ended { background: #FEE2E2; color: #DC2626; }
 .daily-question {
   font-size: 22px; font-weight: 800; line-height: 1.3;
   margin-bottom: 6px; letter-spacing: -0.3px;
@@ -219,21 +227,7 @@ body {
   font-size: 15px; font-weight: 800; position: relative; z-index: 1; min-width: 44px; text-align: right;
 }
 
-/* ===== TIMER ===== */
-.timer-card {
-  background: #fff; border-radius: var(--radius); padding: 20px 24px;
-  box-shadow: var(--shadow); display: flex; align-items: center; gap: 16px;
-  margin-bottom: 20px;
-}
-.timer-icon {
-  width: 48px; height: 48px; border-radius: 14px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  display: flex; align-items: center; justify-content: center;
-}
-.timer-icon svg { width: 24px; height: 24px; fill: #fff; }
-.timer-info { flex: 1; }
-.timer-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-.timer-value { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+/* timer card removed */
 
 /* ===== TAB BAR ===== */
 .tab-bar {
@@ -274,8 +268,8 @@ body {
   <!-- PREGUNTA DEL DÍA -->
   <div class="daily-card">
     <div class="daily-label">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#764ba2" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      Pregunta del día
+      <span class="pill pill-active">Activo</span>
+      <span class="pill pill-timer" id="pillTimer">⏱ --:--:--</span>
     </div>
     <div class="daily-question">¿Te duchas por la mañana o por la noche?</div>
     <div class="daily-voters"><strong>12,847</strong> sujetos han respondido</div>
@@ -347,24 +341,12 @@ body {
     </div>
   </div>
 
-  <!-- TIMER -->
-  <div class="timer-card">
-    <div class="timer-icon">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
-    </div>
-    <div class="timer-info">
-      <div class="timer-label">Siguiente pregunta en</div>
-      <div class="timer-value" id="timerValue">--:--:--</div>
-    </div>
-  </div>
-
   <!-- PREGUNTA DE AYER -->
   <div class="yesterday-card">
     <div class="yesterday-label">
-      <span>📋</span> Pregunta de ayer
+      <span class="pill pill-ended">Terminado</span>
     </div>
     <div class="yesterday-question">¿Pizza con piña: sí o no?</div>
-    <div class="yesterday-closed">🔒 Esta pregunta ya está cerrada</div>
     <div class="yesterday-options">
       <div class="yesterday-option">
         <div class="yo-avatar">🍕</div>
@@ -516,7 +498,7 @@ function addComment() {
 
 // ===== TIMER =====
 function startTimer() {
-  const timerEl = document.getElementById('timerValue');
+  const timerEl = document.getElementById('pillTimer');
   function tick() {
     const now = new Date();
     const tomorrow = new Date(now);
@@ -526,7 +508,7 @@ function startTimer() {
     const h = String(Math.floor(diff / 36e5)).padStart(2, '0');
     const m = String(Math.floor((diff % 36e5) / 6e4)).padStart(2, '0');
     const s = String(Math.floor((diff % 6e4) / 1e3)).padStart(2, '0');
-    timerEl.textContent = `${h}h ${m}m ${s}s`;
+    timerEl.textContent = `⏱ ${h}:${m}:${s}`;
     requestAnimationFrame(tick);
   }
   tick();
