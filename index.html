@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Monos — Experimento Social</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --mint: #A8E6CF;
+  --mint-light: #D4F5E6;
+  --lilac: #C3B1E1;
+  --lilac-light: #E8DEFF;
+  --yellow: #FFEAA7;
+  --yellow-light: #FFF8DC;
+  --pink: #FFB7C5;
+  --pink-light: #FFE0E8;
+  --orange: #FFD4A8;
+  --bg: #FAFBFC;
+  --card: #FFFFFF;
+  --text: #1A1A2E;
+  --text-secondary: #6B7280;
+  --border: #F0F0F5;
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --tab-height: 72px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height: 100dvh;
+  width: 100vw;
+  position: relative;
+}
+.screen {
+  position: absolute; top:0; left:0; width:100%; height:100%;
+  display: none; flex-direction: column;
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  transition: opacity .35s ease, transform .35s ease;
+}
+.screen.active { display:flex; }
+.screen.fade-in { opacity:0; animation: fadeIn .4s ease forwards; }
+@keyframes fadeIn { to { opacity:1; } }
+.screen.slide-left { transform:translateX(100%); animation: slideLeft .35s ease forwards; }
+@keyframes slideLeft { to { transform:translateX(0); } }
+.screen.slide-right { transform:translateX(-100%); animation: slideRight .35s ease forwards; }
+@keyframes slideRight { to { transform:translateX(0); } }
+
+/* ===== SPLASH ===== */
+#splash {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  justify-content: center; align-items: center; z-index:100;
+}
+#splash .logo-wrap {
+  text-align:center; opacity:0; transform:scale(0.5);
+  animation: splashIn .8s cubic-bezier(.34,1.56,.64,1) .3s forwards;
+}
+@keyframes splashIn { to { opacity:1; transform:scale(1); } }
+#splash .logo-mono { font-size:80px; margin-bottom:8px; }
+#splash .logo-text { font-size:42px; font-weight:800; color:#fff; letter-spacing:-1px; }
+#splash .logo-sub { font-size:14px; color:rgba(255,255,255,.7); margin-top:4px; font-weight:500; }
+#splash .dots { display:flex; gap:6px; justify-content:center; margin-top:40px; opacity:0; animation: fadeIn .5s ease .8s forwards; }
+#splash .dots span { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.5); animation: dotPulse 1.2s ease infinite; }
+#splash .dots span:nth-child(2) { animation-delay:.2s; }
+#splash .dots span:nth-child(3) { animation-delay:.4s; }
+@keyframes dotPulse { 0%,100%{opacity:.3;transform:scale(.8)} 50%{opacity:1;transform:scale(1.1)} }
+
+/* ===== ONBOARDING ===== */
+#onboarding { background:var(--bg); }
+.ob-container { flex:1; display:flex; flex-direction:column; padding:60px 28px 40px; }
+.ob-progress { display:flex; gap:6px; margin-bottom:48px; }
+.ob-progress span { flex:1; height:4px; border-radius:4px; background:var(--border); transition: background .3s; }
+.ob-progress span.done { background: var(--lilac); }
+.ob-slide { flex:1; display:none; flex-direction:column; justify-content:center; text-align:center; }
+.ob-slide.active { display:flex; }
+.ob-icon { font-size:72px; margin-bottom:24px; }
+.ob-title { font-size:28px; font-weight:800; line-height:1.2; margin-bottom:16px; letter-spacing:-0.5px; }
+.ob-desc { font-size:16px; color:var(--text-secondary); line-height:1.6; max-width:320px; margin:0 auto; }
+.ob-highlight { color:#764ba2; font-weight:700; }
+.ob-actions { padding:0 28px 40px; display:flex; gap:12px; }
+.btn-primary {
+  flex:1; padding:18px; border:none; border-radius:16px; font-size:16px; font-weight:700;
+  background: linear-gradient(135deg, #667eea, #764ba2); color:#fff; cursor:pointer;
+  font-family:inherit; transition: transform .15s, box-shadow .15s;
+}
+.btn-primary:active { transform:scale(0.97); }
+.btn-secondary {
+  padding:18px 24px; border:none; border-radius:16px; font-size:16px; font-weight:600;
+  background:transparent; color:var(--text-secondary); cursor:pointer; font-family:inherit;
+}
+
+/* ===== REGISTRATION ===== */
+#registration { background:var(--bg); }
+.reg-container { flex:1; display:flex; flex-direction:column; padding:60px 28px 40px; }
+.reg-step { flex:1; display:none; flex-direction:column; }
+.reg-step.active { display:flex; }
+.reg-label-top { font-size:13px; font-weight:700; color:var(--lilac); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; }
+.reg-question { font-size:26px; font-weight:800; line-height:1.3; margin-bottom:32px; letter-spacing:-0.5px; }
+.reg-input {
+  width:100%; padding:20px; border:2px solid var(--border); border-radius:16px; font-size:18px;
+  font-family:inherit; font-weight:600; background:#fff; outline:none; transition: border-color .2s;
+}
+.reg-input:focus { border-color:var(--lilac); }
+.reg-options { display:flex; flex-direction:column; gap:12px; }
+.reg-option {
+  padding:18px 20px; border:2px solid var(--border); border-radius:16px; font-size:16px;
+  font-weight:600; background:#fff; cursor:pointer; transition: all .2s; text-align:left;
+}
+.reg-option:active, .reg-option.selected { border-color:var(--lilac); background:var(--lilac-light); }
+.reg-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.reg-grid .reg-option { text-align:center; }
+.reg-actions { padding:0 28px 40px; }
+
+/* ===== HOME ===== */
+#home { background:var(--bg); padding-bottom:var(--tab-height); }
+.home-header {
+  padding:20px 24px 0; display:flex; justify-content:space-between; align-items:center;
+}
+.home-greeting { font-size:14px; color:var(--text-secondary); font-weight:500; }
+.home-name { font-size:20px; font-weight:800; }
+.home-streak-badge {
+  display:flex; align-items:center; gap:6px; background:var(--yellow-light); padding:8px 14px;
+  border-radius:12px; font-size:14px; font-weight:700; color:#B8860B;
+}
+.home-content { flex:1; padding:24px; overflow-y:auto; }
+.daily-card {
+  background:#fff; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin-bottom:20px;
+}
+.daily-label { display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--lilac); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:16px; }
+.daily-label svg { width:16px; height:16px; }
+.daily-question { font-size:22px; font-weight:800; line-height:1.3; margin-bottom:6px; letter-spacing:-0.3px; }
+.daily-voters { font-size:13px; color:var(--text-secondary); margin-bottom:24px; font-weight:500; }
+.daily-voters strong { color:var(--text); }
+.vote-options { display:flex; flex-direction:column; gap:12px; }
+.vote-option {
+  display:flex; align-items:center; gap:14px; padding:16px 18px; border:2px solid var(--border);
+  border-radius:16px; cursor:pointer; transition: all .25s; background:#fff; position:relative; overflow:hidden;
+}
+.vote-option:active { transform:scale(0.98); }
+.vote-option .vo-avatar {
+  width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:20px; flex-shrink:0;
+}
+.vote-option:nth-child(1) .vo-avatar { background:var(--mint-light); }
+.vote-option:nth-child(2) .vo-avatar { background:var(--lilac-light); }
+.vote-option:nth-child(3) .vo-avatar { background:var(--yellow-light); }
+.vote-option:nth-child(4) .vo-avatar { background:var(--pink-light); }
+.vote-option .vo-text { font-size:16px; font-weight:600; flex:1; }
+.vote-option .vo-bar {
+  position:absolute; left:0; top:0; height:100%; width:0; opacity:0;
+  transition: width .8s cubic-bezier(.25,.46,.45,.94), opacity .3s;
+  border-radius:14px; z-index:0;
+}
+.vote-option:nth-child(1) .vo-bar { background:var(--mint-light); }
+.vote-option:nth-child(2) .vo-bar { background:var(--lilac-light); }
+.vote-option:nth-child(3) .vo-bar { background:var(--yellow-light); }
+.vote-option:nth-child(4) .vo-bar { background:var(--pink-light); }
+.vote-option .vo-pct {
+  font-size:16px; font-weight:800; opacity:0; transition: opacity .3s .4s; min-width:48px; text-align:right; position:relative; z-index:1;
+}
+.vote-option.voted { pointer-events:none; }
+.vote-option.voted .vo-bar { opacity:1; }
+.vote-option.voted .vo-pct { opacity:1; }
+.vote-option.voted.selected { border-color:var(--lilac); }
+.vote-option .vo-avatar, .vote-option .vo-text { position:relative; z-index:1; }
+
+.timer-card {
+  background:#fff; border-radius:var(--radius); padding:20px 24px; box-shadow:var(--shadow);
+  display:flex; align-items:center; gap:16px;
+}
+.timer-icon { width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg,#667eea,#764ba2); display:flex; align-items:center; justify-content:center; }
+.timer-icon svg { width:24px; height:24px; fill:#fff; }
+.timer-info { flex:1; }
+.timer-label { font-size:13px; color:var(--text-secondary); font-weight:500; }
+.timer-value { font-size:20px; font-weight:800; letter-spacing:-0.3px; }
+
+/* ===== RESULTS ===== */
+#results { background:var(--bg); padding-bottom:var(--tab-height); }
+.results-scroll { flex:1; padding:24px; overflow-y:auto; }
+.results-header { text-align:center; margin-bottom:28px; padding-top:20px; }
+.results-emoji { font-size:56px; margin-bottom:12px; }
+.results-title { font-size:24px; font-weight:800; letter-spacing:-0.5px; }
+.results-sub { font-size:14px; color:var(--text-secondary); margin-top:4px; font-weight:500; }
+.result-bar-card {
+  background:#fff; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin-bottom:16px;
+}
+.rb-title { font-size:13px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+.rb-item { margin-bottom:14px; }
+.rb-item:last-child { margin-bottom:0; }
+.rb-item-head { display:flex; justify-content:space-between; margin-bottom:6px; }
+.rb-item-label { font-size:14px; font-weight:600; }
+.rb-item-pct { font-size:14px; font-weight:800; }
+.rb-track { width:100%; height:10px; background:var(--border); border-radius:8px; overflow:hidden; }
+.rb-fill { height:100%; border-radius:8px; width:0; transition: width 1s cubic-bezier(.25,.46,.45,.94); }
+.rb-fill.mint { background:var(--mint); }
+.rb-fill.lilac { background:var(--lilac); }
+.rb-fill.yellow { background:#F0D78C; }
+.rb-fill.pink { background:var(--pink); }
+
+.rarity-card {
+  background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius:var(--radius);
+  padding:28px; box-shadow:var(--shadow-lg); margin-bottom:16px; color:#fff; text-align:center;
+}
+.rarity-score { font-size:56px; font-weight:800; line-height:1; }
+.rarity-label { font-size:14px; font-weight:600; opacity:.8; margin-top:4px; }
+.rarity-meter { width:100%; height:8px; background:rgba(255,255,255,.2); border-radius:8px; margin:16px 0; overflow:hidden; }
+.rarity-meter-fill { height:100%; background:#fff; border-radius:8px; width:0; transition: width 1.2s ease; }
+.rarity-quote { font-size:14px; line-height:1.5; opacity:.9; font-style:italic; margin-top:12px; }
+
+.compare-card {
+  background:#fff; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin-bottom:16px;
+}
+.compare-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
+.compare-row:last-child { border-bottom:none; }
+.compare-label { font-size:14px; font-weight:500; color:var(--text-secondary); }
+.compare-value { font-size:14px; font-weight:700; }
+.compare-match { color:#22c55e; }
+.compare-diff { color:#ef4444; }
+
+.share-btn-big {
+  width:100%; padding:18px; border:none; border-radius:16px; font-size:16px; font-weight:700;
+  background:var(--text); color:#fff; cursor:pointer; font-family:inherit;
+  display:flex; align-items:center; justify-content:center; gap:10px; transition: transform .15s;
+  margin-bottom:16px;
+}
+.share-btn-big:active { transform:scale(0.97); }
+
+/* ===== SHARE CARD ===== */
+#sharecard { background:rgba(0,0,0,.6); justify-content:center; align-items:center; z-index:90; padding:24px; }
+.share-card-inner {
+  background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius:24px; padding:32px 28px;
+  width:100%; max-width:340px; color:#fff; text-align:center; position:relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.sc-badge { display:inline-block; background:rgba(255,255,255,.2); padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700; margin-bottom:20px; }
+.sc-question { font-size:18px; font-weight:700; line-height:1.4; margin-bottom:24px; }
+.sc-answer { font-size:14px; font-weight:600; opacity:.8; margin-bottom:4px; }
+.sc-answer-val { font-size:32px; font-weight:800; margin-bottom:20px; }
+.sc-rarity { display:inline-block; background:rgba(255,255,255,.15); padding:10px 20px; border-radius:14px; margin-bottom:20px; }
+.sc-rarity-num { font-size:28px; font-weight:800; }
+.sc-rarity-label { font-size:11px; font-weight:600; opacity:.7; display:block; }
+.sc-footer { font-size:12px; opacity:.5; margin-top:8px; }
+.share-close-btn {
+  margin-top:20px; padding:16px 32px; border:2px solid #fff; border-radius:14px; background:transparent;
+  color:#fff; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit;
+}
+
+/* ===== FRIENDS ===== */
+#friends { background:var(--bg); padding-bottom:var(--tab-height); }
+.friends-scroll { flex:1; padding:24px; overflow-y:auto; }
+.screen-title { font-size:28px; font-weight:800; letter-spacing:-0.5px; padding:20px 0 4px; }
+.screen-subtitle { font-size:14px; color:var(--text-secondary); font-weight:500; margin-bottom:24px; }
+.invite-card {
+  background:linear-gradient(135deg, var(--mint-light), var(--lilac-light)); border-radius:var(--radius);
+  padding:24px; margin-bottom:24px; text-align:center;
+}
+.invite-label { font-size:13px; font-weight:700; color:var(--text-secondary); margin-bottom:8px; }
+.invite-code { font-size:28px; font-weight:800; letter-spacing:4px; margin-bottom:16px; }
+.invite-btn {
+  display:inline-flex; align-items:center; gap:8px; padding:12px 24px; border:none; border-radius:12px;
+  background:var(--text); color:#fff; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit;
+}
+.friend-item {
+  display:flex; align-items:center; gap:14px; padding:16px; background:#fff;
+  border-radius:16px; box-shadow:var(--shadow); margin-bottom:12px;
+}
+.friend-avatar {
+  width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:20px; font-weight:800; color:#fff;
+}
+.friend-info { flex:1; }
+.friend-name { font-size:15px; font-weight:700; }
+.friend-rarity { font-size:13px; color:var(--text-secondary); font-weight:500; }
+.friend-match {
+  padding:6px 12px; border-radius:10px; font-size:12px; font-weight:700;
+}
+.friend-match.same { background:var(--mint-light); color:#059669; }
+.friend-match.diff { background:var(--pink-light); color:#dc2626; }
+
+/* ===== PROFILE ===== */
+#profile { background:var(--bg); padding-bottom:var(--tab-height); }
+.profile-scroll { flex:1; padding:24px; overflow-y:auto; }
+.profile-header { text-align:center; margin-bottom:28px; padding-top:16px; }
+.profile-avatar-big {
+  width:80px; height:80px; border-radius:50%; margin:0 auto 12px;
+  background:linear-gradient(135deg, #667eea, #764ba2); display:flex; align-items:center;
+  justify-content:center; font-size:36px; color:#fff; font-weight:800;
+}
+.profile-name-big { font-size:22px; font-weight:800; }
+.profile-id { font-size:13px; color:var(--text-secondary); font-weight:500; }
+.stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px; }
+.stat-card {
+  background:#fff; border-radius:16px; padding:20px; box-shadow:var(--shadow); text-align:center;
+}
+.stat-value { font-size:28px; font-weight:800; }
+.stat-label { font-size:12px; color:var(--text-secondary); font-weight:600; margin-top:4px; }
+.stat-card.accent { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; }
+.stat-card.accent .stat-label { color:rgba(255,255,255,.7); }
+
+/* Radar chart */
+.radar-card { background:#fff; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin-bottom:20px; }
+.radar-title { font-size:13px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+.radar-wrap { display:flex; justify-content:center; }
+canvas#radarChart { max-width:280px; max-height:280px; }
+
+.badges-section { margin-bottom:20px; }
+.badges-grid { display:flex; gap:12px; flex-wrap:wrap; }
+.badge-item {
+  width:72px; text-align:center;
+}
+.badge-icon {
+  width:56px; height:56px; border-radius:16px; margin:0 auto 6px; display:flex;
+  align-items:center; justify-content:center; font-size:24px;
+}
+.badge-icon.locked { background:var(--border); opacity:.4; }
+.badge-label { font-size:11px; font-weight:600; color:var(--text-secondary); }
+
+/* ===== ACHIEVEMENTS ===== */
+#achievements { background:var(--bg); padding-bottom:var(--tab-height); }
+.ach-scroll { flex:1; padding:24px; overflow-y:auto; }
+.streak-card {
+  background:linear-gradient(135deg, #FF9A56, #FF6B6B); border-radius:var(--radius);
+  padding:28px; color:#fff; text-align:center; margin-bottom:24px; box-shadow:var(--shadow-lg);
+}
+.streak-num { font-size:56px; font-weight:800; line-height:1; }
+.streak-label { font-size:16px; font-weight:600; opacity:.85; margin-top:4px; }
+.streak-sub { font-size:13px; opacity:.7; margin-top:8px; }
+.calendar-card { background:#fff; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin-bottom:24px; }
+.cal-title { font-size:13px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; text-align:center; }
+.cal-day-label { font-size:11px; font-weight:700; color:var(--text-secondary); padding:4px 0; }
+.cal-day {
+  width:100%; aspect-ratio:1; border-radius:10px; display:flex; align-items:center;
+  justify-content:center; font-size:13px; font-weight:600; color:var(--text-secondary);
+}
+.cal-day.active { background:var(--mint); color:#fff; font-weight:700; }
+.cal-day.today { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; font-weight:700; }
+.cal-day.empty { visibility:hidden; }
+
+.ach-item {
+  display:flex; align-items:center; gap:16px; padding:18px; background:#fff;
+  border-radius:16px; box-shadow:var(--shadow); margin-bottom:12px;
+}
+.ach-icon { width:52px; height:52px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.ach-info { flex:1; }
+.ach-name { font-size:15px; font-weight:700; }
+.ach-desc { font-size:13px; color:var(--text-secondary); font-weight:500; margin-top:2px; }
+.ach-check { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.ach-check.done { background:var(--mint); }
+.ach-check.locked { background:var(--border); }
+
+/* ===== RANKING ===== */
+#ranking { background:var(--bg); padding-bottom:var(--tab-height); }
+.ranking-scroll { flex:1; padding:24px; overflow-y:auto; }
+.podium { display:flex; align-items:flex-end; justify-content:center; gap:12px; margin-bottom:28px; padding-top:20px; }
+.podium-item { text-align:center; }
+.podium-item .podium-av {
+  width:56px; height:56px; border-radius:50%; margin:0 auto 8px; display:flex;
+  align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:20px;
+}
+.podium-item.first .podium-av { width:72px; height:72px; font-size:26px; }
+.podium-item .podium-name { font-size:13px; font-weight:700; }
+.podium-item .podium-score { font-size:12px; color:var(--text-secondary); font-weight:600; }
+.podium-bar { width:64px; border-radius:12px 12px 0 0; margin:0 auto 8px; }
+.podium-item.first .podium-bar { height:80px; background:linear-gradient(180deg,#FFD700,#FFA500); width:80px; }
+.podium-item.second .podium-bar { height:56px; background:linear-gradient(180deg,#C0C0C0,#A0A0A0); }
+.podium-item.third .podium-bar { height:40px; background:linear-gradient(180deg,#CD7F32,#A0522D); }
+.rank-item {
+  display:flex; align-items:center; gap:14px; padding:16px; background:#fff;
+  border-radius:16px; box-shadow:var(--shadow); margin-bottom:12px;
+}
+.rank-pos { width:28px; font-size:16px; font-weight:800; text-align:center; }
+.rank-av { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:16px; }
+.rank-info { flex:1; }
+.rank-name { font-size:15px; font-weight:700; }
+.rank-badge-txt { font-size:12px; color:var(--text-secondary); }
+.rank-score { font-size:16px; font-weight:800; color:var(--lilac); }
+
+/* ===== SETTINGS ===== */
+#settings { background:var(--bg); padding-bottom:var(--tab-height); }
+.settings-scroll { flex:1; padding:24px; overflow-y:auto; }
+.setting-group { margin-bottom:24px; }
+.setting-group-title { font-size:12px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; padding-left:4px; }
+.setting-item {
+  display:flex; align-items:center; justify-content:space-between; padding:18px;
+  background:#fff; border-radius:16px; box-shadow:var(--shadow); margin-bottom:8px;
+}
+.setting-left { display:flex; align-items:center; gap:14px; }
+.setting-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.setting-text { font-size:15px; font-weight:600; }
+.toggle {
+  width:52px; height:30px; border-radius:15px; background:var(--border); position:relative;
+  cursor:pointer; transition:background .2s;
+}
+.toggle.on { background:var(--mint); }
+.toggle::after {
+  content:''; position:absolute; top:3px; left:3px; width:24px; height:24px;
+  border-radius:50%; background:#fff; box-shadow:0 2px 4px rgba(0,0,0,.15);
+  transition: transform .2s;
+}
+.toggle.on::after { transform:translateX(22px); }
+.setting-arrow { color:var(--text-secondary); font-size:18px; }
+
+/* ===== BOTTOM TAB BAR ===== */
+.tab-bar {
+  position:fixed; bottom:0; left:0; right:0; height:var(--tab-height);
+  background:rgba(255,255,255,.95); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border); display:flex; z-index:80; padding-bottom:env(safe-area-inset-bottom);
+}
+.tab-bar.hidden { display:none; }
+.tab-item {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:4px; cursor:pointer; transition:color .2s; color:var(--text-secondary); -webkit-tap-highlight-color:transparent;
+}
+.tab-item.active { color:#764ba2; }
+.tab-item svg { width:24px; height:24px; }
+.tab-label { font-size:11px; font-weight:700; }
+
+/* ===== UTILITIES ===== */
+.back-btn {
+  position:absolute; top:16px; left:16px; width:40px; height:40px; border-radius:12px;
+  background:#fff; box-shadow:var(--shadow); border:none; display:flex; align-items:center;
+  justify-content:center; cursor:pointer; z-index:10;
+}
+.back-btn svg { width:20px; height:20px; }
+.gear-btn {
+  position:absolute; top:16px; right:16px; width:40px; height:40px; border-radius:12px;
+  background:#fff; box-shadow:var(--shadow); border:none; display:flex; align-items:center;
+  justify-content:center; cursor:pointer; z-index:10;
+}
+.gear-btn svg { width:20px; height:20px; }
+@keyframes countUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes shakeX { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+.shake { animation: shakeX .5s ease; }
+</style>
+</head>
+<body>
+
+<!-- ==================== SPLASH ==================== -->
+<div class="screen active" id="splash">
+  <div class="logo-wrap">
+    <div class="logo-mono">🐒</div>
+    <div class="logo-text">Monos</div>
+    <div class="logo-sub">Experimento Social</div>
+  </div>
+  <div class="dots"><span></span><span></span><span></span></div>
+</div>
+
+<!-- ==================== ONBOARDING ==================== -->
+<div class="screen" id="onboarding">
+  <div class="ob-container">
+    <div class="ob-progress"><span class="done"></span><span></span><span></span></div>
+    <div class="ob-slide active" data-step="0">
+      <div class="ob-icon">🔬</div>
+      <div class="ob-title">Bienvenido al<br>Laboratorio</div>
+      <div class="ob-desc">Un grupo de monos científicos lleva años estudiando a la especie humana. Tus hábitos, manías y decisiones… todo queda registrado.</div>
+    </div>
+    <div class="ob-slide" data-step="1">
+      <div class="ob-icon">🧬</div>
+      <div class="ob-title">Eres el Sujeto<br><span class="ob-highlight">#48,291</span></div>
+      <div class="ob-desc">Cada día recibirás una pregunta. Responde con sinceridad. Nuestros monos compararán tu respuesta con miles de humanos. ¿Eres normal o eres... raro?</div>
+    </div>
+    <div class="ob-slide" data-step="2">
+      <div class="ob-icon">🚀</div>
+      <div class="ob-title">Tu primera<br>misión</div>
+      <div class="ob-desc">Responde preguntas, desbloquea insignias, compite con amigos y descubre tu <span class="ob-highlight">Índice de Rareza</span>. Los monos están observando.</div>
+    </div>
+  </div>
+  <div class="ob-actions">
+    <button class="btn-secondary" id="obBack" style="display:none">Atrás</button>
+    <button class="btn-primary" id="obNext">Continuar</button>
+  </div>
+</div>
+
+<!-- ==================== REGISTRATION ==================== -->
+<div class="screen" id="registration">
+  <div class="reg-container">
+    <div class="ob-progress" id="regProgress"><span class="done"></span><span></span><span></span><span></span></div>
+    <div class="reg-step active" data-step="0">
+      <div class="reg-label-top">Ficha de laboratorio</div>
+      <div class="reg-question">¿Cómo te llaman los de tu especie?</div>
+      <input class="reg-input" id="regName" placeholder="Tu alias..." maxlength="20" autocomplete="off">
+    </div>
+    <div class="reg-step" data-step="1">
+      <div class="reg-label-top">Datos del sujeto</div>
+      <div class="reg-question">¿Cuántos ciclos solares llevas vivo?</div>
+      <div class="reg-grid">
+        <div class="reg-option" data-val="18-24">18-24</div>
+        <div class="reg-option" data-val="25-34">25-34</div>
+        <div class="reg-option" data-val="35-44">35-44</div>
+        <div class="reg-option" data-val="45+">45+</div>
+      </div>
+    </div>
+    <div class="reg-step" data-step="2">
+      <div class="reg-label-top">Clasificación biológica</div>
+      <div class="reg-question">¿Cómo te identificas?</div>
+      <div class="reg-options">
+        <div class="reg-option" data-val="Hombre">Hombre</div>
+        <div class="reg-option" data-val="Mujer">Mujer</div>
+        <div class="reg-option" data-val="Otro">Prefiero no decir</div>
+      </div>
+    </div>
+    <div class="reg-step" data-step="3">
+      <div class="reg-label-top">Ubicación del hábitat</div>
+      <div class="reg-question">¿Desde dónde nos observas?</div>
+      <div class="reg-options">
+        <div class="reg-option" data-val="España">🇪🇸 España</div>
+        <div class="reg-option" data-val="México">🇲🇽 México</div>
+        <div class="reg-option" data-val="Argentina">🇦🇷 Argentina</div>
+        <div class="reg-option" data-val="Colombia">🇨🇴 Colombia</div>
+        <div class="reg-option" data-val="Otro">🌍 Otro</div>
+      </div>
+    </div>
+  </div>
+  <div class="reg-actions">
+    <button class="btn-primary" id="regNext">Continuar</button>
+  </div>
+</div>
+
+<!-- ==================== HOME ==================== -->
+<div class="screen" id="home">
+  <div class="home-header">
+    <div>
+      <div class="home-greeting">Buenos días, sujeto</div>
+      <div class="home-name" id="homeUserName">—</div>
+    </div>
+    <div class="home-streak-badge">🔥 <span id="homeStreak">7</span> días</div>
+  </div>
+  <div class="home-content">
+    <div class="daily-card">
+      <div class="daily-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#764ba2" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Pregunta del día
+      </div>
+      <div class="daily-question" id="dailyQuestion">¿Te duchas por la mañana o por la noche?</div>
+      <div class="daily-voters"><strong id="dailyVoters">12,847</strong> sujetos han respondido</div>
+      <div class="vote-options" id="voteOptions">
+        <div class="vote-option" data-idx="0">
+          <div class="vo-avatar">🌅</div>
+          <div class="vo-text">Por la mañana</div>
+          <div class="vo-bar"></div>
+          <div class="vo-pct">63%</div>
+        </div>
+        <div class="vote-option" data-idx="1">
+          <div class="vo-avatar">🌙</div>
+          <div class="vo-text">Por la noche</div>
+          <div class="vo-bar"></div>
+          <div class="vo-pct">29%</div>
+        </div>
+        <div class="vote-option" data-idx="2">
+          <div class="vo-avatar">🔄</div>
+          <div class="vo-text">Ambas</div>
+          <div class="vo-bar"></div>
+          <div class="vo-pct">6%</div>
+        </div>
+        <div class="vote-option" data-idx="3">
+          <div class="vo-avatar">🤷</div>
+          <div class="vo-text">Depende del día</div>
+          <div class="vo-bar"></div>
+          <div class="vo-pct">2%</div>
+        </div>
+      </div>
+    </div>
+    <div class="timer-card">
+      <div class="timer-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+      </div>
+      <div class="timer-info">
+        <div class="timer-label">Siguiente pregunta en</div>
+        <div class="timer-value" id="timerValue">06h 42m 18s</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== RESULTS ==================== -->
+<div class="screen" id="results">
+  <button class="back-btn" onclick="showScreen('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <div class="results-scroll">
+    <div class="results-header">
+      <div class="results-emoji">🐒</div>
+      <div class="results-title">Resultados del laboratorio</div>
+      <div class="results-sub">Análisis completado por nuestros monos</div>
+    </div>
+    <div class="result-bar-card">
+      <div class="rb-title">Distribución global</div>
+      <div id="resultBars"></div>
+    </div>
+    <div class="rarity-card">
+      <div style="font-size:13px;font-weight:600;opacity:.7;margin-bottom:4px;">Tu índice de rareza</div>
+      <div class="rarity-score" id="rarityScore">0</div>
+      <div class="rarity-label">de 100</div>
+      <div class="rarity-meter"><div class="rarity-meter-fill" id="rarityFill"></div></div>
+      <div class="rarity-quote" id="rarityQuote">"Dato: El 63% de los sujetos coincide contigo. Eres predeciblemente humano."</div>
+    </div>
+    <div class="compare-card">
+      <div class="rb-title">Comparativa por segmento</div>
+      <div id="compareRows">
+        <div class="compare-row"><span class="compare-label">Tu rango de edad</span><span class="compare-value compare-match">68% igual que tú</span></div>
+        <div class="compare-row"><span class="compare-label">Tu género</span><span class="compare-value compare-diff">Solo 52% igual</span></div>
+        <div class="compare-row"><span class="compare-label">Tu país</span><span class="compare-value compare-match">71% coincide</span></div>
+      </div>
+    </div>
+    <button class="share-btn-big" onclick="showScreen('sharecard')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      Compartir resultado
+    </button>
+  </div>
+</div>
+
+<!-- ==================== SHARE CARD ==================== -->
+<div class="screen" id="sharecard">
+  <div class="share-card-inner">
+    <div class="sc-badge">🐒 MONOS — Experimento Social</div>
+    <div class="sc-question" id="scQuestion">¿Te duchas por la mañana o por la noche?</div>
+    <div class="sc-answer">Mi respuesta</div>
+    <div class="sc-answer-val" id="scAnswer">Por la mañana</div>
+    <div class="sc-rarity">
+      <div class="sc-rarity-num" id="scRarity">27</div>
+      <div class="sc-rarity-label">Índice de rareza</div>
+    </div>
+    <div class="sc-footer">monos.app — ¿Y tú qué tan raro eres?</div>
+  </div>
+  <button class="share-close-btn" onclick="showScreen('results')">Cerrar</button>
+</div>
+
+<!-- ==================== FRIENDS ==================== -->
+<div class="screen" id="friends">
+  <div class="friends-scroll">
+    <div class="screen-title">Amigos</div>
+    <div class="screen-subtitle">Compara tu rareza con tu manada</div>
+    <div class="invite-card">
+      <div class="invite-label">Tu código de invitación</div>
+      <div class="invite-code" id="inviteCode">MONO-7X92</div>
+      <button class="invite-btn" onclick="copyInvite()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copiar código
+      </button>
+    </div>
+    <div id="friendsList"></div>
+  </div>
+</div>
+
+<!-- ==================== PROFILE ==================== -->
+<div class="screen" id="profile">
+  <button class="gear-btn" onclick="showScreen('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+  <div class="profile-scroll">
+    <div class="profile-header">
+      <div class="profile-avatar-big" id="profileInitial">E</div>
+      <div class="profile-name-big" id="profileName">Eric</div>
+      <div class="profile-id">Sujeto #48,291</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card accent"><div class="stat-value">42</div><div class="stat-label">Índice de rareza</div></div>
+      <div class="stat-card"><div class="stat-value">🔥 7</div><div class="stat-label">Racha actual</div></div>
+      <div class="stat-card"><div class="stat-value">34</div><div class="stat-label">Preguntas</div></div>
+      <div class="stat-card"><div class="stat-value">89%</div><div class="stat-label">Participación</div></div>
+    </div>
+    <div class="radar-card">
+      <div class="radar-title">Mapa de rareza por categoría</div>
+      <div class="radar-wrap"><canvas id="radarChart" width="280" height="280"></canvas></div>
+    </div>
+    <div class="badges-section">
+      <div class="rb-title" style="margin-bottom:14px;">Insignias</div>
+      <div class="badges-grid">
+        <div class="badge-item"><div class="badge-icon" style="background:var(--mint-light)">🧪</div><div class="badge-label">Novato</div></div>
+        <div class="badge-item"><div class="badge-icon" style="background:var(--lilac-light)">🔥</div><div class="badge-label">7 días</div></div>
+        <div class="badge-item"><div class="badge-icon" style="background:var(--yellow-light)">🦄</div><div class="badge-label">Ultra raro</div></div>
+        <div class="badge-item"><div class="badge-icon locked">🏆</div><div class="badge-label">30 días</div></div>
+        <div class="badge-item"><div class="badge-icon locked">👑</div><div class="badge-label">Top 1%</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ACHIEVEMENTS ==================== -->
+<div class="screen" id="achievements">
+  <div class="ach-scroll">
+    <div class="screen-title">Logros</div>
+    <div class="screen-subtitle">Los monos reconocen tu dedicación</div>
+    <div class="streak-card">
+      <div class="streak-num">7</div>
+      <div class="streak-label">días de racha</div>
+      <div class="streak-sub">🐒 "Este humano es constante. Interesante..."</div>
+    </div>
+    <div class="calendar-card">
+      <div class="cal-title">Marzo 2026</div>
+      <div class="cal-grid" id="calendarGrid"></div>
+    </div>
+    <div id="achList"></div>
+  </div>
+</div>
+
+<!-- ==================== RANKING ==================== -->
+<div class="screen" id="ranking">
+  <button class="back-btn" onclick="showScreen('friends')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <div class="ranking-scroll">
+    <div class="screen-title" style="padding-top:48px;">Ranking de rareza</div>
+    <div class="screen-subtitle">¿Quién es el más raro de la manada?</div>
+    <div class="podium">
+      <div class="podium-item second">
+        <div class="podium-av" style="background:#C0C0C0">L</div>
+        <div class="podium-bar"></div>
+        <div class="podium-name">Laura</div>
+        <div class="podium-score">61 pts</div>
+      </div>
+      <div class="podium-item first">
+        <div class="podium-av" style="background:linear-gradient(135deg,#FFD700,#FFA500)">M</div>
+        <div class="podium-bar"></div>
+        <div class="podium-name">Miguel</div>
+        <div class="podium-score">78 pts</div>
+      </div>
+      <div class="podium-item third">
+        <div class="podium-av" style="background:#CD7F32">A</div>
+        <div class="podium-bar"></div>
+        <div class="podium-name">Ana</div>
+        <div class="podium-score">55 pts</div>
+      </div>
+    </div>
+    <div id="rankList"></div>
+  </div>
+</div>
+
+<!-- ==================== SETTINGS ==================== -->
+<div class="screen" id="settings">
+  <button class="back-btn" onclick="showScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <div class="settings-scroll" style="padding-top:56px;">
+    <div class="screen-title">Ajustes</div>
+    <div class="screen-subtitle">Configuración del laboratorio</div>
+    <div class="setting-group">
+      <div class="setting-group-title">Notificaciones</div>
+      <div class="setting-item"><div class="setting-left"><div class="setting-icon" style="background:var(--mint-light)">🔔</div><div class="setting-text">Pregunta diaria</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting-item"><div class="setting-left"><div class="setting-icon" style="background:var(--lilac-light)">👥</div><div class="setting-text">Actividad de amigos</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting-item"><div class="setting-left"><div class="setting-icon" style="background:var(--yellow-light)">🏆</div><div class="setting-text">Logros</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">General</div>
+      <div class="setting-item"><div class="setting-left"><div class="setting-icon" style="background:var(--lilac-light)">🌐</div><div class="setting-text">Idioma</div></div><div class="setting-arrow">Español ›</div></div>
+      <div class="setting-item"><div class="setting-left"><div class="setting-icon" style="background:var(--pink-light)">🎨</div><div class="setting-text">Apariencia</div></div><div class="setting-arrow">Claro ›</div></div>
+    </div>
+    <div class="setting-group">
+      <div class="setting-group-title">Cuenta</div>
+      <div class="setting-item"><div class="setting-left"><div class="setting-icon" style="background:var(--pink-light)">📤</div><div class="setting-text">Exportar datos</div></div><div class="setting-arrow">›</div></div>
+      <div class="setting-item" onclick="alert('¡Los monos te echarán de menos! 🐒')" style="cursor:pointer"><div class="setting-left"><div class="setting-icon" style="background:#FFE0E0">🚪</div><div class="setting-text" style="color:#dc2626">Cerrar sesión</div></div><div class="setting-arrow">›</div></div>
+    </div>
+    <div style="text-align:center;padding:24px 0;font-size:13px;color:var(--text-secondary);">Monos v1.0.0 · Hecho con 🐒 por monos científicos</div>
+  </div>
+</div>
+
+<!-- ==================== TAB BAR ==================== -->
+<nav class="tab-bar hidden" id="tabBar">
+  <div class="tab-item active" data-tab="home" onclick="tabNav('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+    <span class="tab-label">Inicio</span>
+  </div>
+  <div class="tab-item" data-tab="friends" onclick="tabNav('friends')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    <span class="tab-label">Amigos</span>
+  </div>
+  <div class="tab-item" data-tab="profile" onclick="tabNav('profile')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span class="tab-label">Perfil</span>
+  </div>
+  <div class="tab-item" data-tab="achievements" onclick="tabNav('achievements')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+    <span class="tab-label">Logros</span>
+  </div>
+</nav>
+
+<script>
+// ===== STATE =====
+const state = {
+  user: { name:'', age:'', sex:'', country:'' },
+  voted: false,
+  selectedOption: -1
+};
+
+const questions = [
+  { q:"¿Te duchas por la mañana o por la noche?", opts:["Por la mañana","Por la noche","Ambas","Depende del día"], icons:["🌅","🌙","🔄","🤷"], pcts:[63,29,6,2] },
+  { q:"¿Pizza con piña: sí o no?", opts:["¡Sí, deliciosa!","Jamás","Solo a veces","Nunca la he probado"], icons:["🍕","🚫","🤔","😶"], pcts:[34,48,12,6] },
+  { q:"¿Duermes con calcetines?", opts:["Siempre","Nunca","Solo en invierno","Un pie sí, otro no"], icons:["🧦","🦶","❄️","🤪"], pcts:[18,52,27,3] },
+];
+const currentQ = questions[0];
+
+const friends = [
+  { name:"Laura", initial:"L", color:"#667eea", rarity:61, match:"same" },
+  { name:"Miguel", initial:"M", color:"#764ba2", rarity:78, match:"diff" },
+  { name:"Ana", initial:"A", color:"#e84393", rarity:55, match:"same" },
+  { name:"Carlos", initial:"C", color:"#00b894", rarity:42, match:"diff" },
+  { name:"María", initial:"M", color:"#fdcb6e", rarity:33, match:"same" },
+];
+
+const achData = [
+  { icon:"🧪", bg:"var(--mint-light)", name:"Primer experimento", desc:"Responde tu primera pregunta", done:true },
+  { icon:"🔥", bg:"var(--yellow-light)", name:"Racha de 7 días", desc:"7 días consecutivos respondiendo", done:true },
+  { icon:"🦄", bg:"var(--lilac-light)", name:"Ultra raro", desc:"Consigue un índice de rareza > 90", done:true },
+  { icon:"👥", bg:"var(--pink-light)", name:"Líder de manada", desc:"Invita a 5 amigos", done:false },
+  { icon:"🏆", bg:"var(--yellow-light)", name:"Veterano", desc:"30 días de racha", done:false },
+  { icon:"🧠", bg:"var(--mint-light)", name:"Enciclopedia humana", desc:"Responde 100 preguntas", done:false },
+];
+
+const rankData = [
+  { pos:1, name:"Miguel", initial:"M", color:"linear-gradient(135deg,#FFD700,#FFA500)", score:78, badge:"El más raro" },
+  { pos:2, name:"Laura", initial:"L", color:"#667eea", score:61, badge:"Impredecible" },
+  { pos:3, name:"Ana", initial:"A", color:"#e84393", score:55, badge:"Curiosa" },
+  { pos:4, name:"Eric", initial:"E", color:"#764ba2", score:42, badge:"Tú", you:true },
+  { pos:5, name:"Carlos", initial:"C", color:"#00b894", score:42, badge:"Normal" },
+  { pos:6, name:"María", initial:"M", color:"#fdcb6e", score:33, badge:"La más normal" },
+];
+
+const monkeyQuotes = [
+  '"Dato: El 63% de los sujetos coincide contigo. Eres predeciblemente humano." — Dr. Banana 🐒',
+  '"Fascinante. Tu respuesta está en la mayoría. Nada especial que reportar." — Prof. Coconut 🐒',
+  '"Solo el 8% respondió como tú. Eres un espécimen raro. Los monos están intrigados." — Dr. Banana 🐒',
+  '"Hmm, respuesta inesperada. Te hemos subido de prioridad en el estudio." — Prof. Coconut 🐒',
+];
+
+// ===== NAVIGATION =====
+let currentScreen = 'splash';
+function showScreen(id, anim='fade-in') {
+  document.querySelectorAll('.screen.active').forEach(s => { s.classList.remove('active','fade-in','slide-left','slide-right'); });
+  const el = document.getElementById(id);
+  el.classList.add('active', anim);
+  currentScreen = id;
+  const noTab = ['splash','onboarding','registration','sharecard'];
+  document.getElementById('tabBar').classList.toggle('hidden', noTab.includes(id));
+  if(id==='profile') drawRadar();
+}
+
+function tabNav(id) {
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab===id));
+  showScreen(id);
+}
+
+// ===== SPLASH AUTO-TRANSITION =====
+setTimeout(()=> showScreen('onboarding'), 2500);
+
+// ===== ONBOARDING =====
+let obStep = 0;
+document.getElementById('obNext').onclick = () => {
+  if(obStep < 2) {
+    obStep++;
+    updateOB();
+  } else {
+    showScreen('registration');
+  }
+};
+document.getElementById('obBack').onclick = () => {
+  if(obStep > 0) { obStep--; updateOB(); }
+};
+function updateOB() {
+  document.querySelectorAll('.ob-slide').forEach((s,i) => s.classList.toggle('active', i===obStep));
+  document.querySelectorAll('#onboarding .ob-progress span').forEach((s,i) => s.classList.toggle('done', i<=obStep));
+  document.getElementById('obBack').style.display = obStep > 0 ? '' : 'none';
+  document.getElementById('obNext').textContent = obStep === 2 ? 'Empezar' : 'Continuar';
+}
+
+// ===== REGISTRATION =====
+let regStep = 0;
+document.getElementById('regNext').onclick = () => {
+  if(regStep === 0) {
+    const v = document.getElementById('regName').value.trim();
+    if(!v) { document.getElementById('regName').classList.add('shake'); setTimeout(()=>document.getElementById('regName').classList.remove('shake'),500); return; }
+    state.user.name = v;
+  }
+  if(regStep < 3) { regStep++; updateReg(); }
+  else { finishReg(); }
+};
+document.querySelectorAll('#registration .reg-option').forEach(opt => {
+  opt.onclick = () => {
+    const step = opt.closest('.reg-step');
+    step.querySelectorAll('.reg-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    const val = opt.dataset.val;
+    if(regStep===1) state.user.age = val;
+    if(regStep===2) state.user.sex = val;
+    if(regStep===3) { state.user.country = val; setTimeout(finishReg, 300); }
+  };
+});
+function updateReg() {
+  document.querySelectorAll('#registration .reg-step').forEach((s,i) => s.classList.toggle('active', i===regStep));
+  document.querySelectorAll('#regProgress span').forEach((s,i) => s.classList.toggle('done', i<=regStep));
+  document.getElementById('regNext').style.display = regStep >= 1 ? 'none' : '';
+}
+function finishReg() {
+  const n = state.user.name || 'Sujeto';
+  document.getElementById('homeUserName').textContent = n;
+  document.getElementById('profileName').textContent = n;
+  document.getElementById('profileInitial').textContent = n[0].toUpperCase();
+  showScreen('home');
+  populateFriends();
+  populateAch();
+  populateRanking();
+  buildCalendar();
+  startTimer();
+}
+
+// ===== VOTING =====
+document.getElementById('voteOptions').onclick = (e) => {
+  const opt = e.target.closest('.vote-option');
+  if(!opt || state.voted) return;
+  state.voted = true;
+  state.selectedOption = parseInt(opt.dataset.idx);
+  const opts = document.querySelectorAll('.vote-option');
+  opts.forEach((o, i) => {
+    o.classList.add('voted');
+    if(i === state.selectedOption) o.classList.add('selected');
+    const pct = currentQ.pcts[i];
+    setTimeout(()=> { o.querySelector('.vo-bar').style.width = pct + '%'; }, 50);
+    o.querySelector('.vo-pct').textContent = pct + '%';
+  });
+  setTimeout(()=> showResults(), 1200);
+};
+
+function showResults() {
+  const barsEl = document.getElementById('resultBars');
+  const colors = ['mint','lilac','yellow','pink'];
+  barsEl.innerHTML = currentQ.opts.map((o,i)=>`
+    <div class="rb-item">
+      <div class="rb-item-head"><span class="rb-item-label">${currentQ.icons[i]} ${o}</span><span class="rb-item-pct">${currentQ.pcts[i]}%</span></div>
+      <div class="rb-track"><div class="rb-fill ${colors[i]}" data-w="${currentQ.pcts[i]}"></div></div>
+    </div>`).join('');
+  const rarity = state.selectedOption === 0 ? 27 : state.selectedOption === 1 ? 45 : state.selectedOption === 2 ? 82 : 94;
+  const quote = rarity < 50 ? monkeyQuotes[0] : monkeyQuotes[2];
+  document.getElementById('rarityQuote').textContent = quote;
+  document.getElementById('scQuestion').textContent = currentQ.q;
+  document.getElementById('scAnswer').textContent = currentQ.opts[state.selectedOption];
+  document.getElementById('scRarity').textContent = rarity;
+  showScreen('results');
+  // Animate bars
+  setTimeout(()=>{
+    document.querySelectorAll('.rb-fill').forEach(f => f.style.width = f.dataset.w + '%');
+    animateNumber('rarityScore', 0, rarity, 1000);
+    document.getElementById('rarityFill').style.width = rarity + '%';
+  }, 200);
+}
+
+function animateNumber(elId, from, to, dur) {
+  const el = document.getElementById(elId);
+  const start = performance.now();
+  function tick(now) {
+    const p = Math.min((now - start) / dur, 1);
+    el.textContent = Math.round(from + (to - from) * p);
+    if(p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// ===== TIMER =====
+function startTimer() {
+  const now = new Date();
+  const tomorrow = new Date(now); tomorrow.setHours(24,0,0,0);
+  function tick() {
+    const diff = tomorrow - new Date();
+    if(diff <= 0) { document.getElementById('timerValue').textContent = '¡Nueva pregunta!'; return; }
+    const h = String(Math.floor(diff/36e5)).padStart(2,'0');
+    const m = String(Math.floor((diff%36e5)/6e4)).padStart(2,'0');
+    const s = String(Math.floor((diff%6e4)/1e3)).padStart(2,'0');
+    document.getElementById('timerValue').textContent = `${h}h ${m}m ${s}s`;
+    requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+// ===== FRIENDS =====
+function populateFriends() {
+  const el = document.getElementById('friendsList');
+  el.innerHTML = friends.map(f => `
+    <div class="friend-item" onclick="showScreen('ranking')">
+      <div class="friend-avatar" style="background:${f.color}">${f.initial}</div>
+      <div class="friend-info"><div class="friend-name">${f.name}</div><div class="friend-rarity">Rareza: ${f.rarity}/100</div></div>
+      <div class="friend-match ${f.match}">${f.match==='same'?'Igual':'Diferente'}</div>
+    </div>`).join('');
+}
+
+// ===== ACHIEVEMENTS =====
+function populateAch() {
+  const el = document.getElementById('achList');
+  el.innerHTML = achData.map(a => `
+    <div class="ach-item">
+      <div class="ach-icon" style="background:${a.bg}">${a.icon}</div>
+      <div class="ach-info"><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div>
+      <div class="ach-check ${a.done?'done':'locked'}">
+        ${a.done?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':''}
+      </div>
+    </div>`).join('');
+}
+
+// ===== RANKING =====
+function populateRanking() {
+  const el = document.getElementById('rankList');
+  el.innerHTML = rankData.filter(r=>r.pos>3).map(r => `
+    <div class="rank-item" style="${r.you?'border:2px solid var(--lilac)':''}">
+      <div class="rank-pos">${r.pos}</div>
+      <div class="rank-av" style="background:${r.color}">${r.initial}</div>
+      <div class="rank-info"><div class="rank-name">${r.name} ${r.you?'(tú)':''}</div><div class="rank-badge-txt">${r.badge}</div></div>
+      <div class="rank-score">${r.score}</div>
+    </div>`).join('');
+}
+
+// ===== CALENDAR =====
+function buildCalendar() {
+  const el = document.getElementById('calendarGrid');
+  const days = ['L','M','X','J','V','S','D'];
+  let html = days.map(d=>`<div class="cal-day-label">${d}</div>`).join('');
+  // March 2026 starts on Sunday (index 6 in L-D)
+  for(let i=0;i<6;i++) html += '<div class="cal-day empty"></div>';
+  const activeDays = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+  for(let d=1;d<=31;d++) {
+    const cls = d===13?'today':activeDays.includes(d)?'active':'';
+    html += `<div class="cal-day ${cls}">${d}</div>`;
+  }
+  el.innerHTML = html;
+}
+
+// ===== RADAR CHART =====
+function drawRadar() {
+  const c = document.getElementById('radarChart');
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  const W = 280, H = 280, cx = W/2, cy = H/2, R = 100;
+  ctx.clearRect(0,0,W,H);
+  const labels = ['Higiene','Sueño','Comida','Social','Rutina','Ocio'];
+  const values = [0.65, 0.42, 0.78, 0.35, 0.55, 0.70];
+  const n = labels.length;
+  // Grid
+  for(let ring=1;ring<=4;ring++) {
+    ctx.beginPath();
+    const r = R * ring / 4;
+    for(let i=0;i<=n;i++) {
+      const a = (Math.PI*2*i/n) - Math.PI/2;
+      const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle = '#E8E8F0'; ctx.lineWidth = 1; ctx.stroke();
+  }
+  // Axes + labels
+  for(let i=0;i<n;i++) {
+    const a = (Math.PI*2*i/n) - Math.PI/2;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+R*Math.cos(a), cy+R*Math.sin(a));
+    ctx.strokeStyle='#E8E8F0'; ctx.lineWidth=1; ctx.stroke();
+    const lx = cx + (R+20)*Math.cos(a), ly = cy + (R+20)*Math.sin(a);
+    ctx.fillStyle='#6B7280'; ctx.font='600 11px Plus Jakarta Sans'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(labels[i], lx, ly);
+  }
+  // Data
+  ctx.beginPath();
+  for(let i=0;i<=n;i++) {
+    const idx = i % n;
+    const a = (Math.PI*2*idx/n) - Math.PI/2;
+    const r = R * values[idx];
+    const x = cx + r*Math.cos(a), y = cy + r*Math.sin(a);
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  }
+  ctx.fillStyle = 'rgba(118,75,162,.15)'; ctx.fill();
+  ctx.strokeStyle = '#764ba2'; ctx.lineWidth = 2.5; ctx.stroke();
+  // Dots
+  for(let i=0;i<n;i++) {
+    const a = (Math.PI*2*i/n) - Math.PI/2;
+    const r = R * values[i];
+    ctx.beginPath(); ctx.arc(cx+r*Math.cos(a), cy+r*Math.sin(a), 4, 0, Math.PI*2);
+    ctx.fillStyle='#764ba2'; ctx.fill();
+  }
+}
+
+function copyInvite() {
+  const code = document.getElementById('inviteCode').textContent;
+  navigator.clipboard?.writeText(code).then(()=>alert('¡Código copiado! 🐒')).catch(()=>alert(code));
+}
+</script>
+</body>
+</html>
